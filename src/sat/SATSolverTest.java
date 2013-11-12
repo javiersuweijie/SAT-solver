@@ -45,11 +45,14 @@ public class SATSolverTest {
 
   @Test
   public void testSATSolver3(){
-    // (~a+b)(a+c)
+    // (a+b)(a+~b)(~a+~b)(!a+b)
     Formula f = makeFm( makeCl(a,b) , makeCl(a,c));
     Environment e = SATSolver.solve(f);
     assertEquals( Bool.TRUE, e.get(c.getVariable()));
 
+    f = makeFm(makeCl(a,b), makeCl(a,nb), makeCl(na,nb), makeCl(na,b));
+    e = SATSolver.solve(f);
+    assertEquals(null, e);
   }
 
     private static Formula makeFm(Clause... e) {
