@@ -49,7 +49,7 @@ public class SATSolver {
           ImList<Clause> reducedClauses = new EmptyImList<Clause>();
           for(Clause c: clauses){
             Clause reduced = c.reduce(l);
-            if(reduced != null) reducedClauses.add(reduced);
+            if(reduced != null) reducedClauses = reducedClauses.add(reduced);
           }
           clauses = reducedClauses;
           l = getUnitClause(reducedClauses);

@@ -42,7 +42,16 @@ public class SATSolverTest {
     	assertEquals( Bool.FALSE, e.get(na.getVariable()));
     	
     }
-    
+
+  @Test
+  public void testSATSolver3(){
+    // (~a+b)(a+c)
+    Formula f = makeFm( makeCl(a,b) , makeCl(a,c));
+    Environment e = SATSolver.solve(f);
+    assertEquals( Bool.TRUE, e.get(c.getVariable()));
+
+  }
+
     private static Formula makeFm(Clause... e) {
         Formula f = new Formula();
         for (Clause c : e) {
