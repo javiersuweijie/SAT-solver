@@ -48,7 +48,7 @@ public class SATSolverTest {
     // (a+b)(a+~b)(~a+~b)(!a+b)
     Formula f = makeFm( makeCl(a,b) , makeCl(a,c));
     Environment e = SATSolver.solve(f);
-    assertEquals( Bool.TRUE, e.get(c.getVariable()));
+//    assertEquals( Bool.TRUE, e.get(c.getVariable()));
 
     f = makeFm(makeCl(a,b), makeCl(a,nb), makeCl(na,nb), makeCl(na,b));
     e = SATSolver.solve(f);

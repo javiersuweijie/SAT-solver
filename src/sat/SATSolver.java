@@ -50,20 +50,24 @@ public class SATSolver {
           for(Clause c: clauses){
             Clause reduced = c.reduce(l);
             if(reduced == null) continue;
-            else if(reduced.isEmpty())return null;
             reducedClauses = reducedClauses.add(reduced);
           }
           clauses = reducedClauses;
           l = getUnitClause(reducedClauses);
         }
         Literal s = getLiteralFromSmallestClause(clauses);
-        if(s==null) return env;
-        env = s.setTrue(env);
-        Environment left = solve(substitute(clauses, s), env);
+        if(s != null){
+          env = s.setTrue(env);
+          clauses = substitute(clauses,s);
+        }
+        Environment left = solve(clauses, env);
         if(left !=null) return left;
         else {
-          env = s.getNegation().setTrue(env);
-          return solve(substitute(clauses, NegLiteral.make(s.getVariable())),env);
+          if(s != null){
+            env = s.getNegation().setTrue(env);
+            clauses = substitute(clauses, NegLiteral.make(s.getVariable()));
+          }
+          return solve(clauses,env);
         }
       }
     }
@@ -120,7 +124,7 @@ public class SATSolver {
        int smallest = Integer.MAX_VALUE ;
        Literal l = null;
        for (Clause c: clauses) {
-         if (c.size() < smallest) {
+         if (c.size() < smallest && !c.isEmpty()) {
            l = c.chooseLiteral();
            smallest = c.size();
          }
