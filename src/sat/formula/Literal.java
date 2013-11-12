@@ -69,9 +69,18 @@ public abstract class Literal {
         return this.negation == literal;
     }
 
-     public Bool eval (Environment e) {
-       return e.get(this.var);
-     }
+    public Bool eval (Environment e) {
+      return e.get(this.var);
+    }
+
+  /**
+   * sets the variable to true in the environment.
+    * @param e
+   * @return
+   */
+    public Environment setTrue(Environment e){
+      return e.put(var,Bool.TRUE);
+    }
 
     // same as Object.equals, but must override bool.Variable.equals
     @Override

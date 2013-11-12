@@ -45,19 +45,22 @@ public class SATSolver {
       else {
         Literal l = getUnitClause(clauses);
         while(l != null){
+          env = l.setTrue(env);
           ImList<Clause> reducedClauses = new EmptyImList<Clause>();
           for(Clause c: clauses){
-            reducedClauses.add(c.reduce(l));
+            Clause reduced = c.reduce(l);
+            if(reduced != null) reducedClauses.add(reduced);
           }
           clauses = reducedClauses;
           l = getUnitClause(reducedClauses);
         }
         Literal s = getLiteralFromSmallestClause(clauses);
-        env.put(s.getVariable(), Bool.TRUE);
+        if(s==null) return env;
+        env = s.setTrue(env);
         Environment left = solve(substitute(clauses, s), env);
         if(left !=null) return left;
         else {
-          env.put(l.getVariable(),Bool.FALSE);
+          env = s.getNegation().setTrue(env);
           return solve(substitute(clauses, NegLiteral.make(s.getVariable())),env);
         }
       }

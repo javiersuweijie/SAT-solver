@@ -38,4 +38,14 @@ public class NegLiteral extends Literal {
         return "~" + var;
     }
 
+  /**
+   * To set the negated to true, the variable must be set to false
+   * in the environment :/
+   * @param e
+   * @return
+   */
+    public Environment setTrue(Environment e){
+      return e.put(var,Bool.FALSE);
+    }
+
 }
