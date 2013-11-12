@@ -6,6 +6,8 @@
  */
 package sat.formula;
 
+import sat.env.Bool;
+import sat.env.Environment;
 import sat.env.Variable;
 
 /**
@@ -66,6 +68,10 @@ public abstract class Literal {
     public boolean negates (Literal literal) {
         return this.negation == literal;
     }
+
+     public Bool eval (Environment e) {
+       return e.get(this.var);
+     }
 
     // same as Object.equals, but must override bool.Variable.equals
     @Override
