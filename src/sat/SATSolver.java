@@ -1,6 +1,6 @@
 package sat;
 
-import com.sun.org.apache.bcel.internal.generic.LUSHR;
+//import com.sun.org.apache.bcel.internal.generic.LUSHR;
 import immutable.EmptyImList;
 import immutable.ImList;
 import sat.env.Bool;
@@ -43,6 +43,7 @@ public class SATSolver {
       if (hasEmptyClause(clauses)) return null;
       else if(isConsistent(clauses, env)) return env;
       else {
+    	//Unit propagation
         Literal l = getUnitClause(clauses);
         while(l != null){
           env = l.setTrue(env);
