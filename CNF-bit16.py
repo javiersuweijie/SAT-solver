@@ -1,10 +1,8 @@
 def XORgenerate(a,b):
-  return "("+a+"v"+b+")^("+"~"+a+"v"+"~"+b+")"
-
-#print xorGenerate("A0","B0")
+  return "("+a+"|"+b+")&("+"~"+a+"|"+"~"+b+")"
 
 def ANDgenerate(a,b):
-  return "("+a+"^"+b+")"
+  return "("+a+"&"+b+")"
 
 P0 = XORgenerate("A0","B0")
 G0 = ANDgenerate("A0","B0")
@@ -17,10 +15,7 @@ def PGgenerate(n):
     P.append(XORgenerate(A,B))
     G.append(ANDgenerate(A,B))
   return (P,G)
-
 (P,G) = PGgenerate(17)
-#print P
-#print G
 
 def PraGaGenerate():
   Pra = []
@@ -28,15 +23,13 @@ def PraGaGenerate():
   for i in range(0,16):
     if i%2 == 1:
       Pra.append(ANDgenerate(P[i-1],P[i]))
-      Ga.append(ANDgenerate(G[i-1],P[i])+"v"+G[i])
+      Ga.append(ANDgenerate(G[i-1],P[i])+"|"+G[i])
     else:
       Pra.append('nothing')
       Ga.append('nothing')
   return Pra,Ga
 
 Pra,Ga = PraGaGenerate()
-#print Pra[0]
-#print Ga[3]
 
 def PrbGbGenerate():
   Prb=[]
@@ -44,15 +37,13 @@ def PrbGbGenerate():
   for i in range(0,16):
     if i%4 == 3:
       Prb.append(ANDgenerate(Pra[i-2],Pra[i]))
-      Gb.append(ANDgenerate(Ga[i-2],Pra[i])+"v"+Ga[i])
+      Gb.append(ANDgenerate(Ga[i-2],Pra[i])+"|"+Ga[i])
     else:
       Prb.append("nothing")
       Gb.append("nothing")
   return Prb,Gb
 
 Prb,Gb = PrbGbGenerate()
-#print Prb[15]
-#print Gb[15]
 
 def PrcGcGenerate():
   Prc=[]
@@ -60,14 +51,13 @@ def PrcGcGenerate():
   for i in range(0,16):
     if i%8==7:
       Prc.append(ANDgenerate(Prb[i-4],Prb[i]))
-      Gc.append(ANDgenerate(Gb[i-4],Prb[i])+"v"+Gb[i])
+      Gc.append(ANDgenerate(Gb[i-4],Prb[i])+"|"+Gb[i])
     else:
       Prc.append("nothing")
       Gc.append("nothing")
   return Prc,Gc
 
 Prc,Gc = PrcGcGenerate()
-#print Gc[15]
 
 def PrdGdGenerate():
   Prd=[]
@@ -75,7 +65,7 @@ def PrdGdGenerate():
   for i in range(0,16):
     if i==15:
       Prd.append(ANDgenerate(Prc[i-8],Prc[i]))
-      Gd.append(ANDgenerate(Gc[i-8],Prc[i])+"v"+Gc[i])
+      Gd.append(ANDgenerate(Gc[i-8],Prc[i])+"|"+Gc[i])
     else:
       Prd.append("nothing")
       Gd.append("nothing")
@@ -84,13 +74,12 @@ def PrdGdGenerate():
 Prd,Gd = PrdGdGenerate()
 
 def GeGenerate():
-  return "(Cin)"+"v"+ANDgenerate(Prb[15],Gd[15])
+  return "(Cin)"+"|"+ANDgenerate(Prb[3],Gb[3])
 
-S16 = XORgenerate(GeGenerate(),XORgenerate("A16","B16"))
-
+S4 = XORgenerate(GeGenerate(),XORgenerate("A4","B4"))
+print S4
 from sympy.logic.boolalg import to_cnf
 from sympy import *
-
 
 A0 = symbols('A0')
 A1 = symbols('A1')
@@ -130,5 +119,3 @@ B16 = symbols('B16')
 
 Cin = symbols('Cin')
 
-
-print to_cnf(((Cin)|((((A12|B12)&(~A12|~B12)&(A13|B13)&(~A13|~B13))&((A14|B14)&(~A14|~B14)&(A15|B15)&(~A15|~B15)))&(((((A0&B0)&(A1|B1)&(~A1|~B1))|(A1&B1)&((A2|B2)&(~A2|~B2)&(A3|B3)&(~A3|~B3)))|((A2&B2)&(A3|B3)&(~A3|~B3))|(A3&B3)&(((A4|B4)&(~A4|~B4)&(A5|B5)&(~A5|~B5))&((A6|B6)&(~A6|~B6)&(A7|B7)&(~A7|~B7))))|(((A4&B4)&(A5|B5)&(~A5|~B5))|(A5&B5)&((A6|B6)&(~A6|~B6)&(A7|B7)&(~A7|~B7)))|((A6&B6)&(A7|B7)&(~A7|~B7))|(A7&B7)&((((A8|B8)&(~A8|~B8)&(A9|B9)&(~A9|~B9))&((A10|B10)&(~A10|~B10)&(A11|B11)&(~A11|~B11)))&(((A12|B12)&(~A12|~B12)&(A13|B13)&(~A13|~B13))&((A14|B14)&(~A14|~B14)&(A15|B15)&(~A15|~B15)))))|((((A8&B8)&(A9|B9)&(~A9|~B9))|(A9&B9)&((A10|B10)&(~A10|~B10)&(A11|B11)&(~A11|~B11)))|((A10&B10)&(A11|B11)&(~A11|~B11))|(A11&B11)&(((A12|B12)&(~A12|~B12)&(A13|B13)&(~A13|~B13))&((A14|B14)&(~A14|~B14)&(A15|B15)&(~A15|~B15))))|(((A12&B12)&(A13|B13)&(~A13|~B13))|(A13&B13)&((A14|B14)&(~A14|~B14)&(A15|B15)&(~A15|~B15)))|((A14&B14)&(A15|B15)&(~A15|~B15))|(A15&B15))|(A16|B16)&(~A16|~B16))&(~(Cin)|((((A12|B12)&(~A12|~B12)&(A13|B13)&(~A13|~B13))&((A14|B14)&(~A14|~B14)&(A15|B15)&(~A15|~B15)))&(((((A0&B0)&(A1|B1)&(~A1|~B1))|(A1&B1)&((A2|B2)&(~A2|~B2)&(A3|B3)&(~A3|~B3)))|((A2&B2)&(A3|B3)&(~A3|~B3))|(A3&B3)&(((A4|B4)&(~A4|~B4)&(A5|B5)&(~A5|~B5))&((A6|B6)&(~A6|~B6)&(A7|B7)&(~A7|~B7))))|(((A4&B4)&(A5|B5)&(~A5|~B5))|(A5&B5)&((A6|B6)&(~A6|~B6)&(A7|B7)&(~A7|~B7)))|((A6&B6)&(A7|B7)&(~A7|~B7))|(A7&B7)&((((A8|B8)&(~A8|~B8)&(A9|B9)&(~A9|~B9))&((A10|B10)&(~A10|~B10)&(A11|B11)&(~A11|~B11)))&(((A12|B12)&(~A12|~B12)&(A13|B13)&(~A13|~B13))&((A14|B14)&(~A14|~B14)&(A15|B15)&(~A15|~B15)))))|((((A8&B8)&(A9|B9)&(~A9|~B9))|(A9&B9)&((A10|B10)&(~A10|~B10)&(A11|B11)&(~A11|~B11)))|((A10&B10)&(A11|B11)&(~A11|~B11))|(A11&B11)&(((A12|B12)&(~A12|~B12)&(A13|B13)&(~A13|~B13))&((A14|B14)&(~A14|~B14)&(A15|B15)&(~A15|~B15))))|(((A12&B12)&(A13|B13)&(~A13|~B13))|(A13&B13)&((A14|B14)&(~A14|~B14)&(A15|B15)&(~A15|~B15)))|((A14&B14)&(A15|B15)&(~A15|~B15))|(A15&B15))|~(A16|B16)&(~A16|~B16)))
