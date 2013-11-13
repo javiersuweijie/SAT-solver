@@ -24,6 +24,7 @@ public class SATSolver {
      *         null if no such environment exists.
      */
     public static Environment solve(Formula formula) {
+    	System.out.println(formula.getClauses().toString());
       return solve(formula.getClauses(), new Environment());
     }
 
@@ -40,6 +41,8 @@ public class SATSolver {
      *         or null if no such environment exists.
      */
     private static Environment solve(ImList<Clause> clauses, Environment env) {
+    	
+      if (env == null) return null;
       if (hasEmptyClause(clauses)) return null;
       else if(isConsistent(clauses, env)) return env;
       else {
@@ -57,18 +60,24 @@ public class SATSolver {
           l = getUnitClause(reducedClauses);
         }
         Literal s = getLiteralFromSmallestClause(clauses);
+        
+        ImList <Clause> leftClauses = clauses;
+        ImList <Clause> rightClauses = clauses;
+        
         if(s != null){
           env = s.setTrue(env);
-          clauses = substitute(clauses,s);
+          leftClauses = substitute(leftClauses,s);
         }
-        Environment left = solve(clauses, env);
+        Environment left = solve(leftClauses, env);
         if(left !=null) return left;
         else {
           if(s != null){
             env = s.getNegation().setTrue(env);
-            clauses = substitute(clauses, NegLiteral.make(s.getVariable()));
+            rightClauses = substitute(rightClauses, s.getNegation());
           }
-          return solve(clauses,env);
+          Environment right = solve(rightClauses,env);
+          if(right != null) return right;
+          else return null;
         }
       }
     }

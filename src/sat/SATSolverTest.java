@@ -18,9 +18,9 @@ public class SATSolverTest {
 	
 	public static Literal[] makeLiteralList(int number) {
 		int charA = (int)'A';
-		Literal[] l = new Literal[number];
-		for (int i=0; i<number;i++) {
-			String s = String.valueOf((char)(charA+i));
+		Literal[] l = new Literal[number+1];
+		for (int i=0; i<number+1;i++) {
+			String s = "V"+i;
 			l[i] = PosLiteral.make(s);
 		}
 		return l;
@@ -108,36 +108,45 @@ public class SATSolverTest {
 		String line;
 		int clause_count = 0;
 		while ((line = br.readLine()) != null) {
-			if (line.isEmpty()||line.charAt(0)=='c'||line.charAt(0)=='\n') {
+			if (line.isEmpty()||line.charAt(0)=='c') {
 				continue;
 			}
+			//else if (line.matches("[\\s][\\s]+")) {
+			//	line.replaceAll("[\\s][\\s]+", "");
+			//}
 			else if (line.charAt(0)=='p') {
 				int number_of_clauses = Integer.valueOf(line.split(" ")[3]);
-				
-				int number_of_literals = Integer.valueOf(line.split(" ")[2])+1;
+				System.out.println("Number of clauses: "+number_of_clauses);
+				int number_of_literals = Integer.valueOf(line.split(" ")[2]);
+				System.out.println("Number of literals: "+number_of_literals);
 				literal_list = makeLiteralList(number_of_literals);
 				negative_literal_list = makeNegativeLiteralList(literal_list);
 				continue;
 			}
-			else sb.append(line);
-			if (!line.endsWith("0")) sb.append(" ");	
+			else {
+				sb.append(line).append(' ');
 		}
-		String[] splitZero = sb.toString().split(" 0");
+		}
+		String[] splitZero = sb.toString().split("\\s+0\\s+");
+		//System.out.println(Arrays.toString(splitZero));
 		array_of_clauses = new Clause[splitZero.length];
 		
-		System.out.println(Arrays.toString(splitZero));
+		//System.out.println(Arrays.toString(splitZero));
 		for (String line_clause: splitZero) {
 			//Iterate through each character in line_clause
 			//Ignore line_clause completely if first char is 'c' or 'p'
 			//We want to ignore all 0s, thus loop starts from i=1
 			//Iterate through alphalist
-			System.out.println(line_clause);
-			String[] sa = line_clause.split(" ");
+			//System.out.println(line_clause);
+			String[] sa = line_clause.trim().split("\\s+");
+			System.out.println(Arrays.toString(sa));
 			int length_of_clause = sa.length;
 			Literal[] array_of_lits = new Literal[length_of_clause];
 			int lit_count = 0;
 			for (String s:sa) {
-				int i = Integer.valueOf(s);
+				if (s.isEmpty()) continue;
+ 				int i = Integer.valueOf(s);
+				//System.out.println(s);
 				if (i<0) {
 					array_of_lits[lit_count] = negative_literal_list[-i];
 					lit_count++;
@@ -148,15 +157,16 @@ public class SATSolverTest {
 				}
 			
 			}
+			System.out.println(Arrays.toString(array_of_lits));
 			array_of_clauses[clause_count] = makeCl(array_of_lits);
 			clause_count++;
 		}
 		br.close();
 		fileReader.close();
-		System.out.println(Arrays.toString(array_of_clauses));
 		Formula f = makeFm(array_of_clauses);
-		System.out.println(f);
+		long time = System.currentTimeMillis();
 		Environment env = SATSolver.solve(f);
+		System.out.println(System.currentTimeMillis() - time);
 		return env;
 	}
 	
@@ -246,19 +256,31 @@ public class SATSolverTest {
     	Environment env = SATSolver.solve(form);
     	assertEquals(null, env);
     }
+    
+    @Test
+    public void testSATSolver9(){
+    	// Unsatisfiable
+    	// 50 clauses
+    	// (a+b)(b+c)(c+d)(d+e)(e+f)(f+g)(g+h)(h+i)(i+j)(j+k)(k+l)(l+m)(m+n)(n+o)(o+p)(p+q)(q+r)(r+s)(s+t)(t+u)(u+v)(v+w)(w+x)(x+y)
+    	Formula form = makeFm( makeCl(a,b), makeCl(b,c), makeCl(c,d), makeCl(d,e), makeCl(e,f), makeCl(f,g), makeCl(g,h), makeCl(h,i), makeCl(i,j), makeCl(j,k), makeCl(k,l), makeCl(l,m), makeCl(m,n), makeCl(n,o), makeCl(o,p), makeCl(p,q), makeCl(q,r), makeCl(r,s), makeCl(s,t), makeCl(t,u), makeCl(u,v), makeCl(v,w), makeCl(w,x), makeCl(x,y), makeCl(y,z));
+    	Environment env = SATSolver.solve(form);
+//    	assertEquals(null, env);
+    }
 
     private static Formula makeFm(Clause... e) {
         Formula f = new Formula();
         for (Clause c : e) {
-            f = f.addClause(c);
+        	if(c != null) f = f.addClause(c);
         }
         return f;
     }
     
     private static Clause makeCl(Literal... e) {
+    	
         Clause c = new Clause();
         for (Literal l : e) {
-            c = c.add(l);
+        	if(c == null) break;
+        	c = c.add(l);
         }
         return c;
     }
