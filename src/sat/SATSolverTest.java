@@ -89,7 +89,7 @@ public class SATSolverTest {
 	Literal nz = z.getNegation();
 	
 	public static Environment content() throws IOException {
-		String filename = "sampleCNF/cnf-4bit.cnf";
+		String filename = "sampleCNF/UnsatExample.cnf";
 		String makefm = "";
 		String[] alphalist = {"","a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"}; 
 		Literal[] literal_list= null;
