@@ -8,9 +8,31 @@ import sat.env.*;
 import sat.formula.*;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
+
 public class SATSolverTest {
+	
+	public static Literal[] makeLiteralList(int number) {
+		int charA = (int)'A';
+		Literal[] l = new Literal[number];
+		for (int i=0; i<number;i++) {
+			String s = String.valueOf((char)(charA+i));
+			l[i] = PosLiteral.make(s);
+		}
+		return l;
+	}
+	public static Literal[] makeNegativeLiteralList(Literal[] l) {
+		Literal[] nl = new Literal[l.length];
+		for (int i=0;i<l.length;i++) {
+			nl[i] = l[i].getNegation();
+		}
+		return nl;
+	}
+	
 	Literal a = PosLiteral.make("a");
 	Literal b = PosLiteral.make("b");
 	Literal c = PosLiteral.make("c");
@@ -66,12 +88,15 @@ public class SATSolverTest {
 	Literal ny = y.getNegation();
 	Literal nz = z.getNegation();
 	
-	public static String content() throws IOException {
-		String filename = "sampleCNF/test.cnf";
+	public static Environment content() throws IOException {
+		String filename = "sampleCNF/cnf-4bit.cnf";
 		String makefm = "";
-		String[] alphalist = {"", "a", "b", "c", "d", "e", "f", "g", "h",
-				"i", "j", "k"}; 
-		FileReader fileReader;        
+		String[] alphalist = {"","a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"}; 
+		Literal[] literal_list= null;
+		Literal[] negative_literal_list=null;
+		Clause[] array_of_clauses = null; 
+		FileReader fileReader;  
+		StringBuilder sb;
         try {
                 fileReader = new FileReader(filename);
         } catch (FileNotFoundException e) {
@@ -79,58 +104,64 @@ public class SATSolverTest {
                 throw new RuntimeException("File not found");
         }
 		BufferedReader br = new BufferedReader(fileReader);
+		sb = new StringBuilder();
 		String line;
+		int clause_count = 0;
 		while ((line = br.readLine()) != null) {
-			String clause="makeCl(";
-			//Iterate through each character in line
-			for(int k=0; k<line.length();k++){
-				//Ignore line completely if first char is 'c' or 'p'
-				if (line.charAt(0)=='c'||line.charAt(0)=='p'||line.charAt(0)=='\n'){break;}
-				else{
-					//We want to ignore all 0s, thus loop starts from i=1
-					//Iterate through alphalist
-					if (line.charAt(k)=='-'){
-						continue;
-					}
-					//Iterate through alphalist
-					for (int i=1; i<12; i++){
-						String reg = "("+i+")";
-						//System.out.println(reg1);
-						String iStr = "\""+i+"\"";
-						//System.out.println(iStr);
-						//System.out.println(alphalist[i]);
-						if (Pattern.matches(reg, "2")){
-							System.out.println("3");
-//							if (line.charAt(k-1) == '-'){
-//								clause += "-"+alphalist[i];
-//							}
-							clause += alphalist[i];
-							clause += ",";
-						}
-					}
-				}
+			if (line.isEmpty()||line.charAt(0)=='c'||line.charAt(0)=='\n') {
+				continue;
 			}
-			clause += "), ";
-			makefm += clause;
-			System.out.println(makefm);
-			//map 1 to 11 -> a to k
-			//map -1 to -11 -> -a to -k
-			//store a to k in another string
-			//makeCl(numbers before 0)
+			else if (line.charAt(0)=='p') {
+				int number_of_clauses = Integer.valueOf(line.split(" ")[3]);
+				
+				int number_of_literals = Integer.valueOf(line.split(" ")[2])+1;
+				literal_list = makeLiteralList(number_of_literals);
+				negative_literal_list = makeNegativeLiteralList(literal_list);
+				continue;
+			}
+			else sb.append(line);
+			if (!line.endsWith("0")) sb.append(" ");	
 		}
-		//makefm remove last two elements
+		String[] splitZero = sb.toString().split(" 0");
+		array_of_clauses = new Clause[splitZero.length];
+		
+		System.out.println(Arrays.toString(splitZero));
+		for (String line_clause: splitZero) {
+			//Iterate through each character in line_clause
+			//Ignore line_clause completely if first char is 'c' or 'p'
+			//We want to ignore all 0s, thus loop starts from i=1
+			//Iterate through alphalist
+			System.out.println(line_clause);
+			String[] sa = line_clause.split(" ");
+			int length_of_clause = sa.length;
+			Literal[] array_of_lits = new Literal[length_of_clause];
+			int lit_count = 0;
+			for (String s:sa) {
+				int i = Integer.valueOf(s);
+				if (i<0) {
+					array_of_lits[lit_count] = negative_literal_list[-i];
+					lit_count++;
+				}
+				else if (i>0) {
+					array_of_lits[lit_count] = literal_list[i];
+					lit_count++;
+				}
+			
+			}
+			array_of_clauses[clause_count] = makeCl(array_of_lits);
+			clause_count++;
+		}
 		br.close();
 		fileReader.close();
-//		System.out.println(makefm);
-		return makefm;
-//		Environment env = SATSolver.solve(makeFm(makeCl()));
-//		System.out.println(env);
-//		return env;
+		System.out.println(Arrays.toString(array_of_clauses));
+		Formula f = makeFm(array_of_clauses);
+		System.out.println(f);
+		Environment env = SATSolver.solve(f);
+		return env;
 	}
 	
 	public static void main(String[] args) throws IOException {
-		SATSolverTest.content();
-		//Environment e = SATSolver.solve(makeFm(makeCl(a,b))	);
+		System.out.println(SATSolverTest.content());
 	}
 	// TODO: add the main method that reads the .cnf file and calls SATSolver.solve to determine the satisfiability
     
