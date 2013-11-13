@@ -173,8 +173,7 @@ public class Clause implements Iterable<Literal> {
         else if (first.equals(l.getNegation())) return rest;
         else {
             ImList<Literal> restR = reduce(rest, l);
-            if (restR == null) return null;
-            return restR.add(first);
+            return rest == null ? null:restR.add(first);
         }
     }
 

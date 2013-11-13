@@ -1,6 +1,7 @@
 package sat;
 
 import com.sun.org.apache.bcel.internal.generic.LUSHR;
+
 import immutable.EmptyImList;
 import immutable.ImList;
 import sat.env.Bool;
@@ -13,6 +14,7 @@ import sat.formula.NegLiteral;
 /**
  * A simple DPLL SAT solver. See http://en.wikipedia.org/wiki/DPLL_algorithm
  */
+
 public class SATSolver {
     /**
      * Solve the problem using a simple version of DPLL with backtracking and
