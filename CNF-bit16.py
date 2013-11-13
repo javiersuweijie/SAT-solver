@@ -77,7 +77,11 @@ def GeGenerate():
   return "(Cin)"+"|"+ANDgenerate(Prb[3],Gb[3])
 
 S4 = XORgenerate(GeGenerate(),XORgenerate("A4","B4"))
-print S4
+
+ripple = "~((A3&B3)&(A3&~((A2&B2)&(A2&~((A1&B1)&(A1&~((A0&B0)&(A0&Cin)&(B0&Cin)))&(B1&~((A0&B0)&(A0&Cin)&(B0&Cin)))))&(B2&~((A1&B1)&(A1&~((A0&B0)&(A0&Cin)&(B0&Cin)))&(B1&~((A0&B0)&(A0&Cin)&(B0&Cin)))))))&(B3&~((A2&B2)&(A2&~((A1&B1)&(A1&~((A0&B0)&(A0&Cin)&(B0&Cin)))&(B1&~((A0&B0)&(A0&Cin)&(B0&Cin)))))&(B2&~((A1&B1)&(A1&~((A0&B0)&(A0&Cin)&(B0&Cin)))&(B1&~((A0&B0)&(A0&Cin)&(B0&Cin))))))))"
+
+combined = XORgenerate(S4,ripple)
+
 from sympy.logic.boolalg import to_cnf
 from sympy import *
 
@@ -86,36 +90,13 @@ A1 = symbols('A1')
 A2 = symbols('A2')
 A3 = symbols('A3')
 A4 = symbols('A4')
-A5 = symbols('A5')
-A6 = symbols('A6')
-A7 = symbols('A7')
-A8 = symbols('A8')
-A9 = symbols('A9')
-A10 = symbols('A10')
-A11 = symbols('A11')
-A12 = symbols('A12')
-A13 = symbols('A13')
-A14 = symbols('A14')
-A15 = symbols('A15')
-A16 = symbols('A16')
 
 B0 = symbols('B0')
 B1 = symbols('B1')
 B2 = symbols('B2')
 B3 = symbols('B3')
 B4 = symbols('B4')
-B5 = symbols('B5')
-B6 = symbols('B6')
-B7 = symbols('B7')
-B8 = symbols('B8')
-B9 = symbols('B9')
-B10 = symbols('B10')
-B11 = symbols('B11')
-B12 = symbols('B12')
-B13 = symbols('B13')
-B14 = symbols('B14')
-B15 = symbols('B15')
-B16 = symbols('B16')
 
 Cin = symbols('Cin')
 
+print to_cnf((((Cin)|((((A0|B0)&(~A0|~B0)&(A1|B1)&(~A1|~B1))&((A2|B2)&(~A2|~B2)&(A3|B3)&(~A3|~B3)))&(((A0&B0)&(A1|B1)&(~A1|~B1))|(A1&B1)&((A2|B2)&(~A2|~B2)&(A3|B3)&(~A3|~B3)))|((A2&B2)&(A3|B3)&(~A3|~B3))|(A3&B3))|(A4|B4)&(~A4|~B4))&(~(Cin)|((((A0|B0)&(~A0|~B0)&(A1|B1)&(~A1|~B1))&((A2|B2)&(~A2|~B2)&(A3|B3)&(~A3|~B3)))&(((A0&B0)&(A1|B1)&(~A1|~B1))|(A1&B1)&((A2|B2)&(~A2|~B2)&(A3|B3)&(~A3|~B3)))|((A2&B2)&(A3|B3)&(~A3|~B3))|(A3&B3))|~(A4|B4)&(~A4|~B4))|~((A3&B3)&(A3&~((A2&B2)&(A2&~((A1&B1)&(A1&~((A0&B0)&(A0&Cin)&(B0&Cin)))&(B1&~((A0&B0)&(A0&Cin)&(B0&Cin)))))&(B2&~((A1&B1)&(A1&~((A0&B0)&(A0&Cin)&(B0&Cin)))&(B1&~((A0&B0)&(A0&Cin)&(B0&Cin)))))))&(B3&~((A2&B2)&(A2&~((A1&B1)&(A1&~((A0&B0)&(A0&Cin)&(B0&Cin)))&(B1&~((A0&B0)&(A0&Cin)&(B0&Cin)))))&(B2&~((A1&B1)&(A1&~((A0&B0)&(A0&Cin)&(B0&Cin)))&(B1&~((A0&B0)&(A0&Cin)&(B0&Cin)))))))))&(~((Cin)|((((A0|B0)&(~A0|~B0)&(A1|B1)&(~A1|~B1))&((A2|B2)&(~A2|~B2)&(A3|B3)&(~A3|~B3)))&(((A0&B0)&(A1|B1)&(~A1|~B1))|(A1&B1)&((A2|B2)&(~A2|~B2)&(A3|B3)&(~A3|~B3)))|((A2&B2)&(A3|B3)&(~A3|~B3))|(A3&B3))|(A4|B4)&(~A4|~B4))&(~(Cin)|((((A0|B0)&(~A0|~B0)&(A1|B1)&(~A1|~B1))&((A2|B2)&(~A2|~B2)&(A3|B3)&(~A3|~B3)))&(((A0&B0)&(A1|B1)&(~A1|~B1))|(A1&B1)&((A2|B2)&(~A2|~B2)&(A3|B3)&(~A3|~B3)))|((A2&B2)&(A3|B3)&(~A3|~B3))|(A3&B3))|~(A4|B4)&(~A4|~B4))|~~((A3&B3)&(A3&~((A2&B2)&(A2&~((A1&B1)&(A1&~((A0&B0)&(A0&Cin)&(B0&Cin)))&(B1&~((A0&B0)&(A0&Cin)&(B0&Cin)))))&(B2&~((A1&B1)&(A1&~((A0&B0)&(A0&Cin)&(B0&Cin)))&(B1&~((A0&B0)&(A0&Cin)&(B0&Cin)))))))&(B3&~((A2&B2)&(A2&~((A1&B1)&(A1&~((A0&B0)&(A0&Cin)&(B0&Cin)))&(B1&~((A0&B0)&(A0&Cin)&(B0&Cin)))))&(B2&~((A1&B1)&(A1&~((A0&B0)&(A0&Cin)&(B0&Cin)))&(B1&~((A0&B0)&(A0&Cin)&(B0&Cin))))))))))
