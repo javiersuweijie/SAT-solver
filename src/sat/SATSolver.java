@@ -95,6 +95,16 @@ public class SATSolver {
     private static ImList<Clause> substitute(ImList<Clause> clauses, Literal l) {
       return clauses.add(new Clause(l));
     }
+    
+    /** checks if the clause is consistent
+     * 
+     * @param clauses
+     * 		a list of clauses
+     * @param e
+     * 		environment
+     * @return 
+     * 		a boolean
+     */
 
     private static boolean isConsistent(ImList<Clause> clauses, Environment e){
       boolean consistent = true;
@@ -114,6 +124,12 @@ public class SATSolver {
       return consistent;
     }
 
+    /** checks if a list of clauses have empty ones inside
+     * 
+     * @param clauses
+     * @return
+     * 		boolean
+     */
     private static boolean hasEmptyClause(ImList<Clause> clauses) {
       boolean hasEmpty = false;
       for(Clause c: clauses){
@@ -124,6 +140,11 @@ public class SATSolver {
       }
       return hasEmpty;
     }
+    /** returns a the clause with a unit variable
+     * 
+     * @param clauses
+     * @return literal
+     */
 
     private static Literal getUnitClause(ImList<Clause> clauses) {
       for(Clause c: clauses) if( c.isUnit()) return c.chooseLiteral();
