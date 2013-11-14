@@ -76,8 +76,7 @@ public class SATSolver {
             rightClauses = substitute(rightClauses, s.getNegation());
           }
           Environment right = solve(rightClauses,env);
-          if(right != null) return right;
-          else return null;
+          return right;
         }
       }
     }
