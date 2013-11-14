@@ -104,6 +104,15 @@ public class Equation {
     return ret;
   }
 
+  /**
+   * Computes the CNF of an equation
+   * with an OR operation
+   *
+   * @param c the output variable
+   * @param a the first input variable
+   * @param b the second input variable
+   * @return the computed CNF as a string
+   */
   public static String or(String c,String a, String b) {
     // c = a + b
     // a -> c         -a c 0
@@ -117,6 +126,10 @@ public class Equation {
     return ret;
   }
 
+  /**
+   * Private method to compute the negation
+   * of a variable.
+   */
   private static String minus(String a) {
     if(a.charAt(0) == '-') return a.substring(1);
     return '-' + a;
