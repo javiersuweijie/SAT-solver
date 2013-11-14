@@ -1,0 +1,391 @@
+.include "D:/Term4/2D/32_bit/nominal.jsim"
+.include "D:/Term4/2D/32_bit/stdcell.jsim"
+.include "D:/Term4/2D/32_bit/2dcheckoff_2p1ns.jsim"
+
+.subckt new_and4 a b c d out
+Xnew1 a b out1 nand2
+Xnew2 c d out2 nand2
+Xnew3 out1 out2 out nor2
+.ends
+
+.subckt blackcell Pkj Gkj Pik Gik P G
+Xy1 Gkj Pik var1 nand2
+Xy2 Gik var2 inverter
+Xy3 var1 var2 G nand2
+Xy5 Pik Pkj var3 nand2
+Xy6 var3 P inverter
+.ends
+
+.subckt greycell Gkj Pik Gik G
+Xgint1 Gkj Pik var4 nand2
+Xgint4 Gik var5 inverter
+Xgint3 var4 var5 G nand2
+.ends
+
+.subckt nor32 A[31:0] z
+X8nor4 A[31:3:4] A[30:2:4] A[29:1:4] A[28:0:4] x[7:0] nor4
+X2nor4 x[7:3:4] x[6:2:4] x[5:1:4] x[4:0:4] y[1:0] new_and4
+X1nor2 y1 y0 t0 nand2
+X2nor2 t0 z inverter
+.ends
+
+.subckt adder32 op0 A[31:0] Ba[31:0] S[31:0] z v n
+Xbuf op0 opOut buffer_8
+Xneg Ba[31:0] opOut#32 B[31:0] xor2
+
+*row0
+Xin1 A[0] B[0] P0 xor2
+Xin0 op0 P0 S[0] xor2
+Xin2 A[0] B[0] temp0 nand2
+Xin3 temp0 Gik0 inverter
+Xin4 opOut P0 Gik0 G0 greycell
+
+*row1
+Xin5 A[1] B[1] P1 xor2
+Xin6 G0 P1 S[1] xor2
+Xin7 A[1] B[1] temp1 nand2
+Xin8 temp1 Gik1 inverter
+Xin9 P0 Gik0 P1 Gik1 Pra1 Ga1 blackcell
+Xin10 G0 Pra1 Ga1 Gb1 greycell 
+
+*row2
+Xin11 A[2] B[2] P2 xor2
+Xin12 Gb1 P2 S[2] xor2
+Xin13 A[2] B[2] temp2 nand2
+Xin14 temp2 Gik2 inverter
+Xin15 P1 Gik1 P2 Gik2 Pra2 Ga2 blackcell
+Xin16 G0 Pra2 Ga2 Gb2 greycell
+
+*row3
+Xin17 A[3] B[3] P3 xor2
+Xin18 Gb2 P3 S[3] xor2
+Xin19 A[3] B[3] temp3 nand2
+Xin20 temp3 Gik3 inverter
+Xin21 P2 Gik2 P3 Gik3 Pra3 Ga3 blackcell
+Xin22 Pra1 Ga1 Pra3 Ga3 Prb3 Gb3 blackcell
+Xin23 opOut Prb3 Gb3 Gc3 greycell
+
+*row4
+Xin24 A[4] B[4] P4 xor2
+Xin25 Gc3 P4 S[4] xor2
+Xin26 A[4] B[4] temp4 nand2
+Xin27 temp4 Gik4 inverter
+Xin28 P3 Gik3 P4 Gik4 Pra4 Ga4 blackcell
+Xin29 Pra2 Ga2 Pra4 Ga4 Prb4 Gb4 blackcell
+Xin30 G0 Prb4 Gb4 Gc4 greycell
+
+*row5
+Xin31 A[5] B[5] P5 xor2
+Xin32 Gc4 P5 S[5] xor2
+Xin33 A[5] B[5] temp5 nand2
+Xin34 temp5 Gik5 inverter
+Xin35 P4 Gik4 P5 Gik5 Pra5 Ga5 blackcell
+Xin36 Pra3 Ga3 Pra5 Ga5 Prb5 Gb5 blackcell
+Xin37 Gb1 Prb5 Gb5 Gc5 greycell
+
+*row6
+Xin38 A[6] B[6] P6 xor2
+Xin39 Gc5 P6 S[6] xor2
+Xin40 A[6] B[6] temp6 nand2
+Xin42 temp6 Gik6 inverter
+Xin43 P5 Gik5 P6 Gik6 Pra6 Ga6 blackcell
+Xin44 Pra4 Ga4 Pra6 Ga6 Prb6 Gb6 blackcell
+Xin45 Gb2 Prb6 Gb6 Gc6 greycell
+
+*row7
+Xin46 A[7] B[7] P7 xor2
+Xin47 Gc6 P7 S[7] xor2
+Xin48 A[7] B[7] temp7 nand2
+Xin49 temp7 Gik7 inverter
+Xin50 P6 Gik6 P7 Gik7 Pra7 Ga7 blackcell
+Xin51 Pra5 Ga5 Pra7 Ga7 Prb7 Gb7 blackcell
+Xinextra Prb3 Gb3 Prb7 Gb7 Prc7 Gc7 blackcell
+Xin52 opOut Prc7 Gc7 Gd7 greycell
+
+*row8
+Xin53 A[8] B[8] P8 xor2
+Xin54 Gd7 P8 S[8] xor2
+Xin55 A[8] B[8] temp8 nand2
+Xin56 temp8 Gik8 inverter
+Xin57 P7 Gik7 P8 Gik8 Pra8 Ga8 blackcell
+Xin58 Pra6 Ga6 Pra8 Ga8 Prb8 Gb8 blackcell
+Xin59 Prb4 Gb4 Prb8 Gb8 Prc8 Gc8 blackcell
+Xin60 G0 Prc8 Gc8 Gd8 greycell
+
+*row9
+Xin61 A[9] B[9] P9 xor2
+Xin62 Gd8 P9 S[9] xor2
+Xin63 A[9] B[9] temp9 nand2
+Xin64 temp9 Gik9 inverter
+Xin65 P8 Gik8 P9 Gik9 Pra9 Ga9 blackcell
+Xin66 Pra7 Ga7 Pra9 Ga9 Prb9 Gb9 blackcell
+Xin67 Prb5 Gb5 Prb9 Gb9 Prc9 Gc9 blackcell
+Xin68 Gb1 Prc9 Gc9 Gd9 greycell
+
+*row10
+Xin69 A[10] B[10] P10 xor2
+Xin70 Gd9 P10 S[10] xor2
+Xin71 A[10] B[10] temp10 nand2
+Xin72 temp10 Gik10 inverter
+Xin73 P9 Gik9 P10 Gik10 Pra10 Ga10 blackcell
+Xin74 Pra8 Ga8 Pra10 Ga10 Prb10 Gb10 blackcell
+Xin75 Prb6 Gb6 Prb10 Gb10 Prc10 Gc10 blackcell
+Xin76 Gb2 Prc10 Gc10 Gd10 greycell
+
+*row11
+Xin77 A[11] B[11] P11 xor2
+Xin78 Gd10 P11 S[11] xor2
+Xin79 A[11] B[11] temp11 nand2
+Xin80 temp11 Gik11 inverter
+Xin81 P10 Gik10 P11 Gik11 Pra11 Ga11 blackcell
+Xin82 Pra9 Ga9 Pra11 Ga11 Prb11 Gb11 blackcell
+Xin83 Prb7 Gb7 Prb11 Gb11 Prc11 Gc11 blackcell
+Xin84 Gc3 Prc11 Gc11 Gd11 greycell
+
+*row12
+Xin85 A[12] B[12] P12 xor2
+Xin86 Gd11 P12 S[12] xor2
+Xin87 A[12] B[12] temp12 nand2
+Xin88 temp12 Gik12 inverter
+Xin89 P11 Gik11 P12 Gik12 Pra12 Ga12 blackcell
+Xin90 Pra10 Ga10 Pra12 Ga12 Prb12 Gb12 blackcell
+Xin91 Prb8 Gb8 Prb12 Gb12 Prc12 Gc12 blackcell
+Xin92 Gc4 Prc12 Gc12 Gd12 greycell
+
+*row13
+Xin93 A[13] B[13] P13 xor2
+Xin94 Gd12 P13 S[13] xor2
+Xin95 A[13] B[13] temp13 nand2
+Xin96 temp13 Gik13 inverter
+Xin97 P12 Gik12 P13 Gik13 Pra13 Ga13 blackcell
+Xin98 Pra11 Ga11 Pra13 Ga13 Prb13 Gb13 blackcell
+Xin99 Prb9 Gb9 Prb13 Gb13 Prc13 Gc13 blackcell
+Xin100 Gc5 Prc13 Gc13 Gd13 greycell
+
+*row14
+Xin101 A[14] B[14] P14 xor2
+Xin102 Gd13 P14 S[14] xor2
+Xin103 A[14] B[14] temp14 nand2
+Xin104 temp14 Gik14 inverter
+Xin105 P13 Gik13 P14 Gik14 Pra14 Ga14 blackcell
+Xin106 Pra12 Ga12 Pra14 Ga14 Prb14 Gb14 blackcell
+Xin107 Prb10 Gb10 Prb14 Gb14 Prc14 Gc14 blackcell
+Xin108 Gc6 Prc14 Gc14 Gd14 greycell
+
+*row15
+Xin109 A[15] B[15] P15 xor2
+Xin110 Gd14 P15 S[15] xor2
+Xin111 A[15] B[15] temp15 nand2
+Xin112 temp15 Gik15 inverter
+Xin113 P14 Gik14 P15 Gik15 Pra15 Ga15 blackcell
+Xin114 Pra13 Ga13 Pra15 Ga15 Prb15 Gb15 blackcell
+Xin115 Prb11 Gb11 Prb15 Gb15 Prc15 Gc15 blackcell
+Xin270 Prc7 Gc7 Prc15 Gc15 Prd15 Gd15 blackcell
+Xin116 opOut Prd15 Gd15 Ge15 greycell
+
+*row16
+Xin117 A[16] B[16] P16 xor2
+Xin118 Ge15 P16 S[16] xor2
+Xin119 A[16] B[16] temp16 nand2
+Xin120 temp16 Gik16 inverter
+Xin121 P15 Gik15 P16 Gik16 Pra16 Ga16 blackcell
+Xin122 Pra14 Ga14 Pra16 Ga16 Prb16 Gb16 blackcell
+Xin123 Prb12 Gb12 Prb16 Gb16 Prc16 Gc16 blackcell
+Xin2702 Prc8 Gc8 Prc16 Gc16 Prd16 Gd16 blackcell
+Xin124 G0 Prd16 Gd16 Ge16 greycell
+
+*row17
+Xin125 A[17] B[17] P17 xor2
+Xin126 Ge16 P17 S[17] xor2
+Xin127 A[17] B[17] temp17 nand2
+Xin128 temp17 Gik17 inverter
+Xin129 P16 Gik16 P17 Gik17 Pra17 Ga17 blackcell
+Xin130 Pra15 Ga15 Pra17 Ga17 Prb17 Gb17 blackcell
+Xin131 Prb13 Gb13 Prb17 Gb17 Prc17 Gc17 blackcell
+Xin271 Prc9 Gc9 Prc17 Gc17 Prd17 Gd17 blackcell
+Xin132 Gb1 Prd17 Gd17 Ge17 greycell
+
+*row18
+Xin133 A[18] B[18] P18 xor2
+Xin134 Ge17 P18 S[18] xor2
+Xin135 A[18] B[18] temp18 nand2
+Xin136 temp18 Gik18 inverter
+Xin137 P17 Gik17 P18 Gik18 Pra18 Ga18 blackcell
+Xin138 Pra16 Ga16 Pra18 Ga18 Prb18 Gb18 blackcell
+Xin139 Prb14 Gb14 Prb18 Gb18 Prc18 Gc18 blackcell
+Xin272 Prc10 Gc10 Prc18 Gc18 Prd18 Gd18 blackcell
+Xin140 Gb2 Prd18 Gd18 Ge18 greycell
+
+*row19
+Xin141 A[19] B[19] P19 xor2
+Xin142 Ge18 P19 S[19] xor2
+Xin143 A[19] B[19] temp19 nand2
+Xin144 temp19 Gik19 inverter
+Xin145 P18 Gik18 P19 Gik19 Pra19 Ga19 blackcell
+Xin146 Pra17 Ga17 Pra19 Ga19 Prb19 Gb19 blackcell
+Xin147 Prb15 Gb15 Prb19 Gb19 Prc19 Gc19 blackcell
+Xin273 Prc11 Gc11 Prc19 Gc19 Prd19 Gd19 blackcell
+Xin148 Gc3 Prd19 Gd19 Ge19 greycell
+
+*row20
+Xin149 A[20] B[20] P20 xor2
+Xin150 Ge19 P20 S[20] xor2
+Xin151 A[20] B[20] temp20 nand2
+Xin152 temp20 Gik20 inverter
+Xin153 P19 Gik19 P20 Gik20 Pra20 Ga20 blackcell
+Xin154 Pra18 Ga18 Pra20 Ga20 Prb20 Gb20 blackcell
+Xin155 Prb16 Gb16 Prb20 Gb20 Prc20 Gc20 blackcell
+Xin274 Prc12 Gc12 Prc20 Gc20 Prd20 Gd20 blackcell
+Xin156 Gc4 Prd20 Gd20 Ge20 greycell
+
+*row21
+Xin157 A[21] B[21] P21 xor2
+Xin158 Ge20 P21 S[21] xor2
+Xin159 A[21] B[21] temp21 nand2
+Xin160 temp21 Gik21 inverter
+Xin161 P20 Gik20 P21 Gik21 Pra21 Ga21 blackcell
+Xin165 Pra19 Ga19 Pra21 Ga21 Prb21 Gb21 blackcell
+Xin166 Prb17 Gb17 Prb21 Gb21 Prc21 Gc21 blackcell
+Xin275 Prc13 Gc13 Prc21 Gc21 Prd21 Gd21 blackcell
+Xin167 Gc5 Prd21 Gd21 Ge21 greycell
+
+*row22
+Xin168 A[22] B[22] P22 xor2
+Xin169 Ge21 P22 S[22] xor2
+Xin170 A[22] B[22] temp22 nand2
+Xin171 temp22 Gik22 inverter
+Xin172 P21 Gik21 P22 Gik22 Pra22 Ga22 blackcell
+Xin173 Pra20 Ga20 Pra22 Ga22 Prb22 Gb22 blackcell
+Xin174 Prb18 Gb18 Prb22 Gb22 Prc22 Gc22 blackcell
+Xin276 Prc14 Gc14 Prc22 Gc22 Prd22 Gd22 blackcell
+Xin175 Gc6 Prd22 Gd22 Ge22 greycell
+
+*row23
+Xin176 A[23] B[23] P23 xor2
+Xin177 Ge22 P23 S[23] xor2
+Xin178 A[23] B[23] temp23 nand2
+Xin179 temp23 Gik23 inverter
+Xin180 P22 Gik22 P23 Gik23 Pra23 Ga23 blackcell
+Xin181 Pra21 Ga21 Pra23 Ga23 Prb23 Gb23 blackcell
+Xin182 Prb19 Gb19 Prb23 Gb23 Prc23 Gc23 blackcell
+Xin277 Prc15 Gc15 Prc23 Gc23 Prd23 Gd23 blackcell
+Xin183 Gd7 Prd23 Gd23 Ge23 greycell
+
+*row24
+Xin184 A[24] B[24] P24 xor2
+Xin185 Ge23 P24 S[24] xor2
+Xin186 A[24] B[24] temp24 nand2
+Xin187 temp24 Gik24 inverter
+Xin188 P23 Gik23 P24 Gik24 Pra24 Ga24 blackcell
+Xin189 Pra22 Ga22 Pra24 Ga24 Prb24 Gb24 blackcell
+Xin190 Prb20 Gb20 Prb24 Gb24 Prc24 Gc24 blackcell
+Xin191 Prc16 Gc16 Prc24 Gc24 Prd24 Gd24 blackcell
+Xin192 Gd8 Prd24 Gd24 Ge24 greycell
+
+*row25
+Xin193 A[25] B[25] P25 xor2
+Xin194 Ge24 P25 S[25] xor2
+Xin195 A[25] B[25] temp25 nand2
+Xin196 temp25 Gik25 inverter
+Xin197 P24 Gik24 P25 Gik25 Pra25 Ga25 blackcell
+Xin198 Pra23 Ga23 Pra25 Ga25 Prb25 Gb25 blackcell
+Xin199 Prb21 Gb21 Prb25 Gb25 Prc25 Gc25 blackcell
+Xin200 Prc17 Gc17 Prc25 Gc25 Prd25 Gd25 blackcell
+Xin201 Gd9 Prd25 Gd25 Ge25 greycell
+
+*row26
+Xin300 A[26] B[26] P26 xor2
+Xin202 Ge25 P26 S[26] xor2
+Xin203 A[26] B[26] temp26 nand2
+Xin204 temp26 Gik26 inverter
+Xin205 P25 Gik25 P26 Gik26 Pra26 Ga26 blackcell
+Xin206 Pra24 Ga24 Pra26 Ga26 Prb26 Gb26 blackcell
+Xin207 Prb22 Gb22 Prb26 Gb26 Prc26 Gc26 blackcell
+Xin208 Prc18 Gc18 Prc26 Gc26 Prd26 Gd26 blackcell
+Xin209 Gd10 Prd26 Gd26 Ge26 greycell
+
+*row27
+Xin210 A[27] B[27] P27 xor2
+Xin211 Ge26 P27 S[27] xor2
+Xin212 A[27] B[27] temp27 nand2
+Xin213 temp27 Gik27 inverter
+Xin214 P26 Gik26 P27 Gik27 Pra27 Ga27 blackcell
+Xin215 Pra25 Ga25 Pra27 Ga27 Prb27 Gb27 blackcell
+Xin216 Prb23 Gb23 Prb27 Gb27 Prc27 Gc27 blackcell
+Xin217 Prc19 Gc19 Prc27 Gc27 Prd27 Gd27 blackcell
+Xin218 Gd11 Prd27 Gd27 Ge27 greycell
+
+*row28
+Xin219 A[28] B[28] P28 xor2
+Xin220 Ge27 P28 S[28] xor2
+Xin221 A[28] B[28] temp28 nand2
+Xin222 temp28 Gik28 inverter
+Xin223 P27 Gik27 P28 Gik28 Pra28 Ga28 blackcell
+Xin224 Pra26 Ga26 Pra28 Ga28 Prb28 Gb28 blackcell
+Xin225 Prb24 Gb24 Prb28 Gb28 Prc28 Gc28 blackcell
+Xin226 Prc20 Gc20 Prc28 Gc28 Prd28 Gd28 blackcell
+Xin227 Gd12 Prd28 Gd28 Ge28 greycell
+
+*row29
+Xin228 A[29] B[29] P29 xor2
+Xin229 Ge28 P29 S[29] xor2
+Xin230 A[29] B[29] temp29 nand2
+Xin231 temp29 Gik29 inverter
+Xin232 P28 Gik28 P29 Gik29 Pra29 Ga29 blackcell
+Xin233 Pra27 Ga27 Pra29 Ga29 Prb29 Gb29 blackcell
+Xin234 Prb25 Gb25 Prb29 Gb29 Prc29 Gc29 blackcell
+Xin235 Prc21 Gc21 Prc29 Gc29 Prd29 Gd29 blackcell
+Xin236 Gd13 Prd29 Gd29 Ge29 greycell
+
+*row30
+Xin237 A[30] B[30] P30 xor2
+Xin238 Ge29 P30 S[30] xor2
+Xin239 A[30] B[30] temp30 nand2
+Xin240 temp30 Gik30 inverter
+Xin241 P29 Gik29 P30 Gik30 Pra30 Ga30 blackcell
+Xin242 Pra28 Ga28 Pra30 Ga30 Prb30 Gb30 blackcell
+Xin243 Prb26 Gb26 Prb30 Gb30 Prc30 Gc30 blackcell
+Xin244 Prc22 Gc22 Prc30 Gc30 Prd30 Gd30 blackcell
+Xin245 Gd14 Prd30 Gd30 Ge30 greycell
+
+*row31
+Xin246 A[31] B[31] P31 xor2
+Xin247 Ge30 P31 S[31] xor2
+Xin248 A[31] B[31] temp31 nand2
+Xin249 temp31 Gik31 inverter
+Xin250 P30 Gik30 P31 Gik31 Pra31 Ga31 blackcell
+Xin251 Pra29 Ga29 Pra31 Ga31 Prb31 Gb31 blackcell
+Xin252 Prb27 Gb27 Prb31 Gb31 Prc31 Gc31 blackcell
+Xin253 Prc23 Gc23 Prc31 Gc31 Prd31 Gd31 blackcell
+Xin254 Gd15 Prd31 Gd31 Ge31 greycell
+
+Xz S[31:0] z nor32
+Xbuffer S[31] n buffer
+XinvS S[31] invert_s[31] inverter
+XinvA A[31] invert_a[31] inverter
+XinvB B[31] invert_b[31] inverter
+Xandgate_1 A[31] B[31] invert_s[31] output1 and3
+Xandgate_2 invert_a[31] invert_b[31] S[31] output2 and3
+Xv output1 output2 v or2
+.ends
+
+*.subckt adder32 op0 A[31:0] B[31:0] S[31:0] z v n
+
+*Wa a[31:0] nrz(0,3.3,100n,0n,.1n,.1n)
+*+ 0x0000000A 0x000000A0 0x00000AFF 0x0A000000 0xFFFFFFFF 0x0000FFFF 0x00000FFF 0x000000FF
+*+ 0x00000F00 0xAAAAAAAC
+*Wb b[31:0] nrz(0,3.3,100n,0n,.1n,.1n)
+*+ 0x0000000A 0x00000A0 0x00000A01 0x0A000000 0x00000001 0x00000001 0x00000001 0x00000001
+*+ 0x00000100 0x5555555C
+*Xsub 0 a[31:0] b[31:0] q[31:0] z v n p17 ge16 p16 ge17 g0 adder32
+*.tran 2000n
+*.plot a[31:0]
+*.plot b[31:0]
+*.plot q[31:0]
+*.plot r[31:0]
+*.plot p17
+*.plot ge16
+
+*.plot p16
+*.plot ge17
+*.plot g0
