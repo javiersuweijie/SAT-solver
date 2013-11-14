@@ -89,7 +89,7 @@ public class SATSolverTest {
 	Literal nz = z.getNegation();
 	
 	public static Environment content() throws IOException {
-		String filename = "sampleCNF/UnsatExample.cnf";
+		String filename = "sampleCNF/unsatisfiable.cnf";
 		String makefm = "";
 		String[] alphalist = {"","a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"}; 
 		Literal[] literal_list= null;
@@ -252,7 +252,7 @@ public class SATSolverTest {
     	// Unsatisfiable
     	// 52 clauses
     	// (a+b)(b+c)(c+d)(d+e)(e+f)(f+g)(g+h)(h+i)(i+j)(j+k)(k+l)(l+m)(m+n)(n+o)(o+p)(p+q)(q+r)(r+s)(s+t)(t+u)(u+v)(v+w)(w+x)(x+y)(~y+z)(a+~z)
-    	Formula form = makeFm( makeCl(a,b), makeCl(b,c), makeCl(c,d), makeCl(d,e), makeCl(e,f), makeCl(f,g), makeCl(g,h), makeCl(h,i), makeCl(i,j), makeCl(j,k), makeCl(k,l), makeCl(l,m), makeCl(m,n), makeCl(n,o), makeCl(o,p), makeCl(p,q), makeCl(q,r), makeCl(r,s), makeCl(s,t), makeCl(t,u), makeCl(u,v), makeCl(v,w), makeCl(w,x), makeCl(x,y), makeCl(y,z), makeCl(ny,z), makeCl(a,nz));
+    	Formula form = makeFm( makeCl(a,b), makeCl(b,c), makeCl(c,d), makeCl(d,e), makeCl(e,f), makeCl(f,g), makeCl(g,h), makeCl(h,i), makeCl(i,j), makeCl(j,k), makeCl(k,l), makeCl(l,m), makeCl(m,n), makeCl(n,o), makeCl(o,p), makeCl(p,q), makeCl(q,r), makeCl(r,s), makeCl(s,t), makeCl(t,u), makeCl(u,v), makeCl(v,w), makeCl(w,x), makeCl(x,y), makeCl(ny,nz), makeCl(y,nz), makeCl(y,z), makeCl(ny,z), makeCl(a,nz));
     	Environment env = SATSolver.solve(form);
     	assertEquals(null, env);
     }
