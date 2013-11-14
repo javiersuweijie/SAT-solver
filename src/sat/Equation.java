@@ -1,9 +1,32 @@
 package sat;
 
+/**
+ * Translates Equations in normal form to CNF form
+ *
+ */
+
 public class Equation {
 
+  /**
+   * The equations that need to be solved are stored here
+   * in the form of a string array.
+   *
+   * Each equation is parsed into a an output and two input arguments
+   * An equation cannot have greater than two input variables.
+   *
+   * The resulting CNF of the equations is printed out.
+   *
+   * Note, the grammar of the equation is:
+   * The Grammar of an equation is:
+   * EQN ::== VARIABLE = VARIABLE [.+] VARIABLE
+   * VARIABLE ::== [\d]+
+   *
+   *
+   * @param args unused cmd line arguments
+   */
   public static void main(String args[]) {
     String[] eqs = {
+        // Kogge Stone Adder Equations:
         "47 = 44 + 49",
         "49 = -45 . 46",
         "44 = -46 . 45",
@@ -27,6 +50,7 @@ public class Equation {
         "25 = 43 + 34",
         "43 = 28 . 33",
 
+        // Ripple Carry Adder:
         "46 = 14 + 41",
         "41 = 15 + 50",
         "50 = 16 + 17",
@@ -49,90 +73,24 @@ public class Equation {
         "12 = 2 . 7",
         "13 = 5 . 7",
         "43 = 28 . 33"
-
-//        "v1 = j + l",
-//        "l = -v2 . v3",
-//        "j = -v3 . v2",
-//        "v2 = u + v",
-//        "u = Gb1 . -p2",
-//        "v = -Gb1 . p2",
-//        "G0 = A0 . B0",
-//        "G1 = A1 . B1",
-//        "Ga1 = n + G1",
-//        "n = G0 . p1",
-//        "n = G0 . p1",
-//        "p2 = x + y",
-//        "x = A2 .  -B2",
-//        "y = -A2 . B2",
-//        "p1 = c + d",
-//        "c = A1 . -B1",
-//        "d = -A1 . B1",
-//        "p0 = e + f",
-//        "e = A0 . B0",
-//        "f = -A0 . B0",
-//        "Pra1 = p0 . p1",
-//        "Gb1 = k + Ga1",
-//        "k = Cin . Pra1",
-//        "v3 = T6 + T10",
-//        "T10 = T7 + T11",
-//        "T11 = T8 + T9",
-//        "Q0 = -C2 . -A2",
-//        "T6 = Q0 . B2",
-//        "Q1 = C2 . -A2",
-//        "T7 = Q1 . -B2",
-//        "Q2 = -C2 . A2",
-//        "T8 = Q2 . -B2",
-//        "Q3 = C2 . A2",
-//        "T9 = Q3 . B2"
     };
-    String[] oldeqs = {
-        "v1 = j + l",
-        "l = -v2 . v3",
-        "j = -v3 . v2",
-        "v2 = u + v",
-        "u = Gb1 . -p2",
-        "v = -Gb1 . p2",
-        "G0 = A0 . B0",
-        "G1 = A1 . B1",
-        "Ga1 = n + G1",
-        "n = G0 . p1",
-        "n = G0 . p1",
-        "p2 = x + y",
-        "x = A2 .  -B2",
-        "y = -A2 . B2",
-        "p1 = c + d",
-        "c = A1 . -B1",
-        "d = -A1 . B1",
-        "p0 = e + f",
-        "e = A0 . B0",
-        "f = -A0 . B0",
-        "Pra1 = p0 . p1",
-        "Gb1 = k + Ga1",
-        "k = Cin . Pra1",
-        "v3 = T6 + T10",
-        "T10 = T7 + T11",
-        "T11 = T8 + T9",
-        "Q0 = -C2 . -A2",
-        "T6 = Q0 . B2",
-        "Q1 = C2 . -A2",
-        "T7 = Q1 . -B2",
-        "Q2 = -C2 . A2",
-        "T8 = Q2 . -B2",
-        "Q3 = C2 . A2",
-        "T9 = Q3 . B2"
-    };
-
     String k = "";
-
     for(String s: eqs) {
       String[] a = s.split("[\\s]+");
       if(a[3].equals(".")) k += and(a[0], a[2],a[4]);
       else k += or(a[0], a[2],a[4]);
     }
-
     System.out.println(k);
-
   }
+
+  /**
+   * Computes CNF of and operation
+   *
+   * @param c the output variable
+   * @param a the first input variable
+   * @param b the second input variable
+   * @return the computed CNF as a string
+   */
   public static String and(String c,String a, String b) {
     // c = ab
     // -c a 0
@@ -158,6 +116,7 @@ public class Equation {
     String ret = f+g+h;
     return ret;
   }
+
   private static String minus(String a) {
     if(a.charAt(0) == '-') return a.substring(1);
     return '-' + a;
