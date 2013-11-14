@@ -41,7 +41,7 @@ public class SATSolver {
      *         or null if no such environment exists.
      */
     private static Environment solve(ImList<Clause> clauses, Environment env) {
-    	
+      if (clauses == null) return env;
       if (env == null) return null;
       if (hasEmptyClause(clauses)) return null;
       else if(isConsistent(clauses, env)) return env;
